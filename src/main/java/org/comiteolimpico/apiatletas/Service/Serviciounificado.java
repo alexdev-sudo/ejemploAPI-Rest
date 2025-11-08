@@ -5,14 +5,20 @@ import org.comiteolimpico.apiatletas.DTO.Estadisticas;
 import org.comiteolimpico.apiatletas.DTO.Planilla;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @Service
 public class Serviciounificado {
+    private final AtletaService atletaService;
     private final   GestorEstadistica gestorEstadistica = new GestorEstadistica();
     private  final Gestor_planilla  gestor_planilla = new Gestor_planilla();
-
+public Serviciounificado(AtletaService atletaService) {
+    this.atletaService = atletaService;
+}
     public Estadisticas getEstadisticas(Atleta atleta) {
         Estadisticas dto = new Estadisticas();
         dto.setPromedio(gestorEstadistica.promedio(atleta));
@@ -44,5 +50,40 @@ public class Serviciounificado {
         dto.setBonoMarca(bonoMarca);
         dto.setPagoTotal(bonoMarca + bonoextranjero + pago);
         return dto;
+    }
+    public void exportarPlanillaCSV (String archivo) throws IOException {
+        List<Atleta> atletas = atletaService.listar();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            writer.write("Nombre,TotalEntrenamientos,BonoExtranjero,BonoMarca,PagoTotal\n");
+            for (Atleta atleta : atletas) {
+                Planilla dto = calcularplanilla(atleta);
+                writer.write(String.format("%s,%d,%.2f,%.2f%.2f\n",
+                dto.getNombreatleta(),
+                dto.getTotalentreno(),
+                dto.getBonoextranjero(),
+                dto.getBonoMarca(),
+                dto.getPagoTotal()));
+            }
+        }
+
+    }
+    // Exportar historial de entrenamientos a CSV
+    public void exportarEntrenamientosCSV(String archivo) throws IOException {
+        List<Atleta> atletas = atletaService.listar();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            writer.write("Atleta,Fecha,Tipo,Valor,Unidad,Ubicacion,Pais\n");
+            for(Atleta a : atletas){
+                for(Entrenamiento e : a.gethistorialordenado()){
+                    writer.write(String.format("%s,%s,%s,%.2f,%s,%s,%s\n",
+                            a.getNombre(),
+                            e.getFecha().toString(),
+                            e.getTipo(),
+                            e.getValor(),
+                            e.getUnidad(),
+                            e.getUbicacion(),
+                            e.getPais()));
+                }
+            }
+        }
     }
 }

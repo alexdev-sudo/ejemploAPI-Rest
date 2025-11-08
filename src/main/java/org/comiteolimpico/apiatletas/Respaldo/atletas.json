@@ -1,0 +1,23 @@
+[ {
+  "id" : 1,
+  "nombre" : "Kevin Cordón",
+  "edad" : 0,
+  "departamento" : null,
+  "disciplina" : null,
+  "nacionalidad" : null,
+  "entrenamientos" : [ ],
+  "historialordenado" : [ ],
+  "cantidadentrenamientos" : 0,
+  "fechaIngreso" : null
+}, {
+  "id" : 2,
+  "nombre" : "Kevin Cordón",
+  "edad" : 0,
+  "departamento" : null,
+  "disciplina" : null,
+  "nacionalidad" : null,
+  "entrenamientos" : [ ],
+  "historialordenado" : [ ],
+  "cantidadentrenamientos" : 0,
+  "fechaIngreso" : null
+} ]
